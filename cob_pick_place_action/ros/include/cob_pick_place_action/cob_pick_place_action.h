@@ -38,6 +38,7 @@
 
 
 #include <cob_grasp_generation/QueryGraspsAction.h>
+#include <ipa_manipulation_msgs/GraspPoseAction.h>
 #include <GraspTable.h>
 
 
@@ -51,12 +52,11 @@ private:
 	ros::Publisher pub_ao; //publisher for attached_collision_objects
 
 	boost::scoped_ptr<actionlib::SimpleActionClient<cob_grasp_generation::QueryGraspsAction> > ac_grasps_or;
+	boost::scoped_ptr<actionlib::SimpleActionServer<ipa_manipulation_msgs::GraspPoseAction> > grasp_server_;
 
 	char* GraspTableIniFile;
 	GraspTable* m_GraspTable;
 
-	bool last_grasp_valid;
-	std::string last_object_name;
 	tf::TransformListener tf_listener_;
 	tf::TransformBroadcaster tf_broadcaster_;
 

@@ -61,11 +61,9 @@ void CobPickPlaceActionServer::initialize()
 	//non-KIT objects
 	map_classid_to_classname[5001]="pringles";
 
-	last_grasp_valid = false;
-	last_object_name.clear();
-
 	static const std::string QUERY_GRASPS_OR_ACTION_NAME = "query_grasps";
 	ac_grasps_or.reset(new actionlib::SimpleActionClient<cob_grasp_generation::QueryGraspsAction>(nh_, QUERY_GRASPS_OR_ACTION_NAME, true));
+	grasp_server_.reset(new actionlib::SimpleActionServer<ipa_manipulation_msgs::GraspPoseAction>(nh_, QUERY_GRASPS_OR_ACTION_NAME, true));
 	ROS_INFO("Waiting for action server \"%s\" to start...", QUERY_GRASPS_OR_ACTION_NAME.c_str());
 	ac_grasps_or->waitForServer(); //will wait for infinite time
 	ROS_INFO("Action server \"%s\" started.", QUERY_GRASPS_OR_ACTION_NAME.c_str());
@@ -76,121 +74,6 @@ void CobPickPlaceActionServer::run()
 	ROS_INFO("cob_pick_action...spinning");
 	ros::spin();
 }
-/*
-void CobPickPlaceActionServer::pick_goal_cb(const cob_pick_place_action::CobPickGoalConstPtr &goal)
-{
-	ROS_INFO("PickGoalCB: Received new goal: Trying to pick %s", goal->object_name.c_str());
-	cob_pick_place_action::CobPickResult result;
-	std::string response;
-	bool success = false;
-
-	ROS_DEBUG_STREAM(*(goal.get()));
-
-	if(goal->gripper_type.empty())
-	{
-		ROS_ERROR("Pick failed: No gripper_type specified!");
-		result.success.data=false;
-		response="Pick failed: No gripper_type specified!";
-		as_pick->setAborted(result, response);
-		last_grasp_valid = false;
-		last_object_name.clear();
-		return;
-	}
-
-	///Get grasps from corresponding GraspTable
-	std::vector<moveit_msgs::Grasp> grasps;
-	if(goal->grasp_database=="KIT")
-	{
-		ROS_INFO("Using KIT grasp table");
-		if(goal->grasp_id!=0)
-		{
-			ROS_INFO("Using specific grasp_id: %d", goal->grasp_id);
-			fillSingleGraspKIT(goal->object_class, goal->gripper_type, goal->grasp_id, goal->object_pose, grasps);
-		}
-		else
-		{
-			ROS_INFO("Using all grasps");
-			fillAllGraspsKIT(goal->object_class, goal->gripper_type, goal->object_pose, grasps);
-		}
-	}
-	else if(goal->grasp_database=="OpenRAVE")
-	{
-		ROS_INFO("Using OpenRAVE grasp table");
-		fillGraspsOR(goal->object_class, goal->gripper_type, goal->gripper_side, goal->grasp_id, goal->object_pose, grasps);
-	}
-	else if(goal->grasp_database=="ALL")
-	{
-		ROS_INFO("Using all available databases");
-		std::vector<moveit_msgs::Grasp> grasps_OR, grasps_KIT;
-		fillAllGraspsKIT(goal->object_class, goal->gripper_type, goal->object_pose, grasps_KIT);
-		fillGraspsOR(goal->object_class, goal->gripper_type, goal->gripper_side, goal->grasp_id, goal->object_pose, grasps_OR);
-
-		grasps = grasps_KIT;
-		std::vector<moveit_msgs::Grasp>::iterator it = grasps.end();
-		grasps.insert(it, grasps_OR.begin(), grasps_OR.end());
-	}
-	else
-	{
-		ROS_ERROR("Grasp_Database %s not supported! Please use \"KIT\" or \"OpenRAVE\" or \"ALL\" instead", goal->grasp_database.c_str());
-		result.success.data=false;
-		response="Pick failed: Grasp Database not supported!";
-		as_pick->setAborted(result, response);
-		last_grasp_valid = false;
-		last_object_name.clear();
-		return;
-	}
-
-	if(!grasps.empty())
-	{
-		ROS_INFO("PickGoalCB: Found %lu grasps for this object", grasps.size());
-		for(unsigned int i=0; i<grasps.size(); i++)
-		{
-			ROS_DEBUG_STREAM("Grasp "<< i << ": " << grasps[i]);
-		}
-	}
-	else
-	{
-		ROS_ERROR("No grasps found for object %s in database %s using gripper_type %s", goal->object_name.c_str(), goal->grasp_database.c_str(), goal->gripper_type.c_str());
-		result.success.data=false;
-		response="Pick failed: No grasps found!";
-		as_pick->setAborted(result, response);
-		last_grasp_valid = false;
-		last_object_name.clear();
-		return;
-	}
-
-	///Updating the object collision_object
-	insertObject(goal->object_name, goal->object_class, goal->object_pose);
-
-	if(!(goal->support_surface.empty()))
-	{
-		ROS_INFO("Setting SupportSurface to %s", goal->support_surface.c_str());
-		group.setSupportSurfaceName(goal->support_surface);
-	}
-
-	///Call Pick
-	group.setPlanningTime(300.0);	//default is 5.0 s
-	success = group.pick(goal->object_name, grasps);
-
-	if(success)
-	{
-		ROS_INFO("Pick successfull!");
-		result.success.data=true;
-		response="Pick successfull!";
-		as_pick->setSucceeded(result, response);
-		last_grasp_valid = true;
-		last_object_name = goal->object_name;
-	}
-	else
-	{
-		ROS_ERROR("Pick failed: Could not plan!");
-		result.success.data=false;
-		response="Pick failed: Could not plan!";
-		as_pick->setAborted(result, response);
-		last_grasp_valid = false;
-		last_object_name.clear();
-	}
-}*/
 /*
 void CobPickPlaceActionServer::place_goal_cb(const cob_pick_place_action::CobPlaceGoalConstPtr &goal)
 {
