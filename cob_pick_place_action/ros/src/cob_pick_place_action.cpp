@@ -61,18 +61,8 @@ void CobPickPlaceActionServer::initialize()
 	//non-KIT objects
 	map_classid_to_classname[5001]="pringles";
 
-
-	static const std::string COB_PICKUP_ACTION_NAME = "cob_pick_action";
-	as_pick.reset(new actionlib::SimpleActionServer<cob_pick_place_action::CobPickAction>(nh_, COB_PICKUP_ACTION_NAME, boost::bind(&CobPickPlaceActionServer::pick_goal_cb, this, _1), false));
-	as_pick->start();
-
-	static const std::string COB_PLACE_ACTION_NAME = "cob_place_action";
-	as_place.reset(new actionlib::SimpleActionServer<cob_pick_place_action::CobPlaceAction>(nh_, COB_PLACE_ACTION_NAME, boost::bind(&CobPickPlaceActionServer::place_goal_cb, this, _1), false));
-	as_place->start();
-
 	last_grasp_valid = false;
 	last_object_name.clear();
-
 
 	static const std::string QUERY_GRASPS_OR_ACTION_NAME = "query_grasps";
 	ac_grasps_or.reset(new actionlib::SimpleActionClient<cob_grasp_generation::QueryGraspsAction>(nh_, QUERY_GRASPS_OR_ACTION_NAME, true));
@@ -86,7 +76,7 @@ void CobPickPlaceActionServer::run()
 	ROS_INFO("cob_pick_action...spinning");
 	ros::spin();
 }
-
+/*
 void CobPickPlaceActionServer::pick_goal_cb(const cob_pick_place_action::CobPickGoalConstPtr &goal)
 {
 	ROS_INFO("PickGoalCB: Received new goal: Trying to pick %s", goal->object_name.c_str());
@@ -200,8 +190,8 @@ void CobPickPlaceActionServer::pick_goal_cb(const cob_pick_place_action::CobPick
 		last_grasp_valid = false;
 		last_object_name.clear();
 	}
-}
-
+}*/
+/*
 void CobPickPlaceActionServer::place_goal_cb(const cob_pick_place_action::CobPlaceGoalConstPtr &goal)
 {
 	ROS_INFO("PlaceCB: Received new goal: Trying to Place %s", goal->object_name.c_str());
@@ -305,7 +295,7 @@ void CobPickPlaceActionServer::place_goal_cb(const cob_pick_place_action::CobPla
 		last_object_name.clear();
 	}
 }
-
+*/
 void CobPickPlaceActionServer::insertObject(std::string object_name, unsigned int object_class, geometry_msgs::PoseStamped object_pose)
 {
 	ROS_INFO("Adding object to MoveIt! environment..");
@@ -646,8 +636,8 @@ void CobPickPlaceActionServer::fillGraspsOR(unsigned int objectClassId, std::str
 			//current_grasp.pre_grasp_approach.desired_distance = 0.28;
 
 
-			ROS_INFO_STREAM("EndeffectorLink: " << group.getEndEffectorLink());
-			current_grasp.pre_grasp_approach.direction.header.frame_id = group.getEndEffectorLink();
+			ROS_INFO_STREAM("EndeffectorLink: defined as gripper function needs to be updated to get effector_link from the request");
+			current_grasp.pre_grasp_approach.direction.header.frame_id = "gripper";
 			current_grasp.pre_grasp_approach.direction.vector.x = 0.0;
 			current_grasp.pre_grasp_approach.direction.vector.y = 0.0;
 			current_grasp.pre_grasp_approach.direction.vector.z = 1.0;
@@ -741,8 +731,7 @@ tf::Transform CobPickPlaceActionServer::transformPose(tf::Transform transform_O_
 	{
 		try{
 			/// ToDo: get palm-link name from robot!
-			//tf_listener_.lookupTransform("/sdh_palm_link", group.getEndEffectorLink(), ros::Time(0), transform_SDH_from_ARM7);
-			tf_listener_.lookupTransform("/gripper_left_palm_link", group.getEndEffectorLink(), ros::Time(0), transform_SDH_from_ARM7);
+			tf_listener_.lookupTransform("/gripper_left_palm_link", end_effector_link, ros::Time(0), transform_SDH_from_ARM7);
 			transform_available = true;
 		}
 		catch (tf::TransformException ex){

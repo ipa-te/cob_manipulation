@@ -36,8 +36,7 @@
 #include <shape_tools/solid_primitive_dims.h>
 #include <moveit_msgs/Grasp.h>
 
-#include <cob_pick_place_action/CobPickAction.h>
-#include <cob_pick_place_action/CobPlaceAction.h>
+
 #include <cob_grasp_generation/QueryGraspsAction.h>
 #include <GraspTable.h>
 
@@ -51,12 +50,7 @@ private:
 	ros::Publisher pub_co; //publisher for collision_objects
 	ros::Publisher pub_ao; //publisher for attached_collision_objects
 
-	boost::scoped_ptr<actionlib::SimpleActionServer<cob_pick_place_action::CobPickAction> > as_pick;
-	boost::scoped_ptr<actionlib::SimpleActionServer<cob_pick_place_action::CobPlaceAction> > as_place;
-
 	boost::scoped_ptr<actionlib::SimpleActionClient<cob_grasp_generation::QueryGraspsAction> > ac_grasps_or;
-
-	moveit::planning_interface::MoveGroup group;
 
 	char* GraspTableIniFile;
 	GraspTable* m_GraspTable;
@@ -68,15 +62,21 @@ private:
 
 	std::map<unsigned int,std::string> map_classid_to_classname;
 
+	std::string end_effector_link;
+
 public:
-	CobPickPlaceActionServer(std::string group_name) : group(group_name) {}
+	CobPickPlaceActionServer(std::string group_name){
+		if(!nh_.getParam(ros::this_node::getName() +"/endeffector_name", end_effector_link))
+		{
+			end_effector_link = "gripper";
+			ROS_ERROR("ArmPlanner::initialize --> No endeffector_name available on parameter server");
+		}
+	};
+
 	~CobPickPlaceActionServer();
 
 	void initialize();
 	void run();
-
-	void pick_goal_cb(const cob_pick_place_action::CobPickGoalConstPtr &goal);
-	void place_goal_cb(const cob_pick_place_action::CobPlaceGoalConstPtr &goal);
 
 	void insertObject(std::string object_name, unsigned int object_class, geometry_msgs::PoseStamped object_pose);
 
