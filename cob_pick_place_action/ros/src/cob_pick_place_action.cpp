@@ -854,7 +854,8 @@ tf::Transform CobPickPlaceActionServer::transformPose(tf::Transform transform_O_
 	{
 		try{
 			/// ToDo: get palm-link name from robot!
-			tf_listener_.lookupTransform("/gripper_left_palm_link", end_effector_link, ros::Time(0), transform_SDH_from_ARM7);
+			tf_listener_.lookupTransform("/sdh_palm_link", end_effector_link, ros::Time(0), transform_SDH_from_ARM7);
+			//tf_listener_.lookupTransform("/gripper_left_palm_link", end_effector_link, ros::Time(0), transform_SDH_from_ARM7);
 			transform_available = true;
 		}
 		catch (tf::TransformException ex){
