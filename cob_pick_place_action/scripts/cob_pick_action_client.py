@@ -69,7 +69,7 @@ def cob_pick_action_client():
 	#goal.object_class = 103
 	#goal.object_name = "instanttomatosoup"
 	goal.object_class = 5001
-	goal.object_name = "pringles"
+	goal.object_name = "corn_flakes_package" #"pringles"
 	goal.object_pose.header.stamp = rospy.Time.now()
 	goal.object_pose.header.frame_id = "base_footprint"
 
