@@ -1,13 +1,12 @@
 #!/bin/bash
 
 robot=$1
-pkg_moveit_config_name=${2:-cob_moveit_config}
 
-pkg_moveit_config=`rospack find $pkg_moveit_config_name`
+moveit_config=`rospack find cob_moveit_config`
+config_pkg=$moveit_config/robots/$robot/moveit
 
-echo "Updating collisions for "$robot" in "$pkg_moveit_config
+echo "Updating collisions in "$config_pkg
 
-robot_config=$pkg_moveit_config/robots/$robot/moveit
-rosrun moveit_setup_assistant collisions_updater --config-pkg $robot_config --default --always --keep --trials 100000 --xacro-args '--inorder'
+rosrun moveit_setup_assistant collisions_updater --config-pkg $config_pkg --default --always --keep --trials 100000 --xacro-args '--inorder'
 
-echo "Please review changes in "$robot_config" and provide PR!"
+echo "Please review changes in "$config_pkg" and provide PR!"

@@ -117,16 +117,16 @@ void CobPickPlaceActionServer::grasp_generation_cb(const ipa_manipulation_msgs::
 	else if(goal->grasp_database=="OpenRAVE")
 	{
 		ROS_INFO("Using OpenRAVE grasp table");
-		//fillGraspsOR(goal->object_class, goal->gripper_type, goal->gripper_side, goal->grasp_id, goal->object_pose, grasps);
-		fillGraspsOR(goal->object_class, goal->gripper_type, goal->grasp_id, goal->object_pose, grasps);
+		fillGraspsOR(goal->object_class, goal->gripper_type, goal->gripper_side, goal->grasp_id, goal->object_pose, grasps);
+		//fillGraspsOR(goal->object_class, goal->gripper_type, goal->grasp_id, goal->object_pose, grasps);
 	}
 	else if(goal->grasp_database=="ALL")
 	{
 		ROS_INFO("Using all available databases");
 		std::vector<moveit_msgs::Grasp> grasps_OR, grasps_KIT;
 		fillAllGraspsKIT(goal->object_class, goal->gripper_type, goal->object_pose, grasps_KIT);
-		//fillGraspsOR(goal->object_class, goal->gripper_type, goal->gripper_side, goal->grasp_id, goal->object_pose, grasps_OR);
-		fillGraspsOR(goal->object_class, goal->gripper_type,  goal->grasp_id, goal->object_pose, grasps_OR);
+		fillGraspsOR(goal->object_class, goal->gripper_type, goal->gripper_side, goal->grasp_id, goal->object_pose, grasps_OR);
+		//fillGraspsOR(goal->object_class, goal->gripper_type,  goal->grasp_id, goal->object_pose, grasps_OR);
 
 		grasps = grasps_KIT;
 		std::vector<moveit_msgs::Grasp>::iterator it = grasps.end();
@@ -658,7 +658,8 @@ void CobPickPlaceActionServer::convertGraspKIT(Grasp* current_grasp, geometry_ms
 	else
 		ROS_ERROR("Grasps not queried within timeout");
 }*/
-void CobPickPlaceActionServer::fillGraspsOR(unsigned int objectClassId, std::string gripper_type, unsigned int grasp_id, geometry_msgs::PoseStamped object_pose, std::vector<moveit_msgs::Grasp> &grasps)
+
+void CobPickPlaceActionServer::fillGraspsOR(unsigned int objectClassId, std::string gripper_type, std::string gripper_side, unsigned int grasp_id, geometry_msgs::PoseStamped object_pose, std::vector<moveit_msgs::Grasp> &grasps)
 {
 	bool finished_before_timeout;
 	grasps.clear();
@@ -674,6 +675,7 @@ void CobPickPlaceActionServer::fillGraspsOR(unsigned int objectClassId, std::str
 	cob_grasp_generation::QueryGraspsGoal goal_query_grasps;
 	goal_query_grasps.object_name = map_classid_to_classname.find(objectClassId)->second;
 	goal_query_grasps.gripper_type = gripper_type;
+	goal_query_grasps.gripper_side = gripper_side;
 	goal_query_grasps.grasp_id = grasp_id;
 	goal_query_grasps.num_grasps = 0;
 	goal_query_grasps.threshold = 0;//0.012;
@@ -759,7 +761,7 @@ void CobPickPlaceActionServer::fillGraspsOR(unsigned int objectClassId, std::str
 			//current_grasp.pre_grasp_approach.min_distance = 0.18;
 			//current_grasp.pre_grasp_approach.desired_distance = 0.28;
 
-			ROS_INFO_STREAM("EndeffectorLink: defined as gripper function needs to be updated to get effector_link from the request");
+			ROS_INFO_STREAM("EndeffectorLink: defined as gripper function needs to be updated to get effector_link from the request: "<< end_effector_link);
 			current_grasp.pre_grasp_approach.direction.header.frame_id = end_effector_link;
 			current_grasp.pre_grasp_approach.direction.vector.x = 0.0;
 			current_grasp.pre_grasp_approach.direction.vector.y = 0.0;
