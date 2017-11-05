@@ -148,11 +148,11 @@ void CobPickPlaceActionServer::grasp_generation_cb(const ipa_manipulation_msgs::
 	if(!grasps.empty())
 	{
 		ROS_INFO("GraspGenerationCB: Found %lu grasps for this object", grasps.size());
-/*		for(unsigned int i=0; i<grasps.size(); i++)
+		for(unsigned int i=0; i<grasps.size(); i++)
 		{
-			ROS_INFO_STREAM("Grasp "<< i << ": " << grasps[i]);
+			ROS_DEBUG_STREAM("Grasp "<< i << ": " << grasps[i]);
 		}
-*/
+
 		//result successful grasping position
 		result.grasp.clear();
 		result.grasp = grasps;
@@ -854,7 +854,7 @@ tf::Transform CobPickPlaceActionServer::transformPose(tf::Transform transform_O_
 	{
 		try{
 			/// ToDo: get palm-link name from robot!
-			tf_listener_.lookupTransform("/sdh_palm_link", end_effector_link, ros::Time(0), transform_SDH_from_ARM7);
+			tf_listener_.lookupTransform("/gripper_left_grasp_link", end_effector_link, ros::Time(0), transform_SDH_from_ARM7);
 			//tf_listener_.lookupTransform("/gripper_left_palm_link", end_effector_link, ros::Time(0), transform_SDH_from_ARM7);
 			transform_available = true;
 		}
