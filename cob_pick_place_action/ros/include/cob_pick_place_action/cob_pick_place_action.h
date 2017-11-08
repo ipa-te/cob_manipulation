@@ -71,7 +71,7 @@ public:
 	CobPickPlaceActionServer(std::string group_name){
 		if(!nh_.getParam(ros::this_node::getName() +"/endeffector_name", end_effector_link))
 		{
-			end_effector_link = "gripper_left_base_link";
+			//end_effector_link = "gripper_left_base_link";
 			ROS_ERROR("ArmPlanner::initialize --> No endeffector_name available on parameter server");
 		}
 	};
