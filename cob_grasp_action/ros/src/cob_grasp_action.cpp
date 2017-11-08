@@ -603,11 +603,25 @@ tf::Transform CobGraspActionServer::transformPose(tf::Transform transform_O_from
 	tf::StampedTransform transform_SDH_from_ARM7;
 
 	bool transform_available = false;
+	std::string target_frame;
+
+	if (manipulation_group_name == "arm_left")
+	{
+		target_frame = "/gripper_left_base_link";
+	}
+
+	if (manipulation_group_name == "arm_right")
+	{
+		target_frame = "/gripper_right_base_link";
+	}
+
+
 	while(!transform_available)
 	{
 		try{
 			/// ToDo: get palm-link name from robot!
-			tf_listener_.lookupTransform("/gripper_left_base_link", end_effector_link, ros::Time(0), transform_SDH_from_ARM7);
+			//tf_listener_.lookupTransform("/gripper_left_base_link", end_effector_link, ros::Time(0), transform_SDH_from_ARM7);
+			tf_listener_.lookupTransform( target_frame, end_effector_link, ros::Time(0), transform_SDH_from_ARM7 );
 			//tf_listener_.lookupTransform("/gripper_left_palm_link", end_effector_link, ros::Time(0), transform_SDH_from_ARM7);
 			transform_available = true;
 		}
