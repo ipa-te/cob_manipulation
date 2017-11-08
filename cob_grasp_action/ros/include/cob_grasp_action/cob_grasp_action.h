@@ -65,13 +65,13 @@ private:
 
 	std::map<unsigned int,std::string> map_classid_to_classname;
 
-	std::string end_effector_link;
+	std::string manipulation_group_name, end_effector_link;
 
 public:
-	CobGraspActionServer(std::string group_name){
+	CobGraspActionServer(std::string group_name): manipulation_group_name(group_name){
 		if(!nh_.getParam(ros::this_node::getName() +"/endeffector_name", end_effector_link))
 		{
-			//end_effector_link = "gripper_left_base_link";
+			end_effector_link = "gripper_left_base_link";
 			ROS_ERROR("ArmPlanner::initialize --> No endeffector_name available on parameter server");
 		}
 	};
