@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(cob_pick_place_action)
+project(cob_grasp_action)
 
 find_package(catkin REQUIRED COMPONENTS actionlib_msgs actionlib cob_grasp_generation cob_moveit_interface geometric_shapes geometry_msgs message_generation moveit_msgs moveit_ros_move_group moveit_ros_planning_interface roscpp shape_tools std_msgs tf)
 
@@ -22,12 +22,12 @@ catkin_package(
 ### BUILD ###
 include_directories(${PROJECT_SOURCE_DIR}/ros/include ${PROJECT_SOURCE_DIR}/common/include ${catkin_INCLUDE_DIRS})
 
-add_executable(cob_pick_place_action ros/src/cob_pick_place_action.cpp common/src/GraspTable.cpp)
-add_dependencies(cob_pick_place_action ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(cob_pick_place_action ${catkin_LIBRARIES})
+add_executable(cob_grasp_action ros/src/cob_grasp_action.cpp common/src/GraspTable.cpp)
+add_dependencies(cob_grasp_action ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(cob_grasp_action ${catkin_LIBRARIES})
 
 ### INSTALL ###
-install(TARGETS cob_pick_place_action
+install(TARGETS cob_grasp_action
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

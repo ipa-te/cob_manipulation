@@ -43,7 +43,7 @@
 
 
 
-class CobPickPlaceActionServer
+class CobGraspActionServer
 {
 private:
 	ros::NodeHandle nh_;
@@ -68,7 +68,7 @@ private:
 	std::string end_effector_link;
 
 public:
-	CobPickPlaceActionServer(std::string group_name){
+	CobGraspActionServer(std::string group_name){
 		if(!nh_.getParam(ros::this_node::getName() +"/endeffector_name", end_effector_link))
 		{
 			//end_effector_link = "gripper_left_base_link";
@@ -76,7 +76,7 @@ public:
 		}
 	};
 
-	~CobPickPlaceActionServer();
+	~CobGraspActionServer();
 
 	void initialize();
 	void run();
