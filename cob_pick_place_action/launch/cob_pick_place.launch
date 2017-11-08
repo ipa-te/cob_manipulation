@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
    <arg name="manipulator_group" default="arm_left"/>
-   <arg name="endeffector_name" default="gripper_left_grasp_link"/>
+   <arg name="endeffector_name" default="gripper_left_base_link"/>
 
    <node name="query_grasps_server" pkg="cob_grasp_generation" type="query_grasps_server.py" respawn="false" output="screen"/>
    <node name="cob_pick_place_action" pkg="cob_pick_place_action" type="cob_pick_place_action" args="$(arg manipulator_group)" respawn="false" output="screen">

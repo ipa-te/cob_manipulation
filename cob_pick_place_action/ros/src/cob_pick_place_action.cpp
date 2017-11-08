@@ -59,7 +59,8 @@ void CobPickPlaceActionServer::initialize()
 	map_classid_to_classname[128]="bathdetergent";
 
 	//non-KIT objects
-	map_classid_to_classname[5001]="pringles";
+	map_classid_to_classname[5000]="pringles";
+	map_classid_to_classname[5001]="corn_flakes_package";
 
 	static const std::string QUERY_GRASPS_OR_ACTION_NAME = "query_grasps";
 	ac_grasps_or.reset(new actionlib::SimpleActionClient<cob_grasp_generation::QueryGraspsAction>(nh_, QUERY_GRASPS_OR_ACTION_NAME, true));
@@ -721,7 +722,7 @@ void CobPickPlaceActionServer::fillGraspsOR(unsigned int objectClassId, std::str
 			//debug
 			geometry_msgs::Transform msg_grasp_O_from_SDH;
 			tf::transformTFToMsg(transform_grasp_O_from_SDH, msg_grasp_O_from_SDH);
-			ROS_DEBUG_STREAM("msg_grasp_O_from_SDH:" << msg_grasp_O_from_SDH);
+			ROS_WARN_STREAM("msg_grasp_O_from_SDH:" << msg_grasp_O_from_SDH);
 
 			// HEADER_from_O (given)
 			tf::Transform transform_HEADER_from_O = tf::Transform(
@@ -730,14 +731,14 @@ void CobPickPlaceActionServer::fillGraspsOR(unsigned int objectClassId, std::str
 			//debug
 			geometry_msgs::Transform msg_HEADER_from_O;
 			tf::transformTFToMsg(transform_HEADER_from_O, msg_HEADER_from_O);
-			ROS_DEBUG_STREAM("msg_HEADER_from_O:" << msg_HEADER_from_O);
+			ROS_WARN_STREAM("msg_HEADER_from_O:" << msg_HEADER_from_O);
 
 			// FOOTPRINT_from_ARM7
 			tf::Transform transform_grasp_FOOTPRINT_from_ARM7 = transformPose(transform_grasp_O_from_SDH, transform_HEADER_from_O, object_pose.header.frame_id);
 			//debug
 			geometry_msgs::Transform msg_grasp_FOOTPRINT_from_ARM7;
 			tf::transformTFToMsg(transform_grasp_FOOTPRINT_from_ARM7, msg_grasp_FOOTPRINT_from_ARM7);
-			ROS_DEBUG_STREAM("msg_grasp_FOOTPRINT_from_ARM7:" << msg_grasp_FOOTPRINT_from_ARM7);
+			ROS_WARN_STREAM("msg_grasp_FOOTPRINT_from_ARM7:" << msg_grasp_FOOTPRINT_from_ARM7);
 
 			// convert to PoseStamped
 			geometry_msgs::Transform msg_transform_grasp_FOOTPRINT_from_ARM7;
@@ -856,7 +857,7 @@ tf::Transform CobPickPlaceActionServer::transformPose(tf::Transform transform_O_
 	{
 		try{
 			/// ToDo: get palm-link name from robot!
-			tf_listener_.lookupTransform("/gripper_left_grasp_link", end_effector_link, ros::Time(0), transform_SDH_from_ARM7);
+			tf_listener_.lookupTransform("/gripper_left_base_link", end_effector_link, ros::Time(0), transform_SDH_from_ARM7);
 			//tf_listener_.lookupTransform("/gripper_left_palm_link", end_effector_link, ros::Time(0), transform_SDH_from_ARM7);
 			transform_available = true;
 		}
