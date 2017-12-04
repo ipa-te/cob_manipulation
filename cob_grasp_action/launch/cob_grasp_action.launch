@@ -4,7 +4,7 @@
    <arg name="endeffector_name" default="gripper_left_base_link"/>
 
    <node name="query_grasps_server" pkg="cob_grasp_generation" type="query_grasps_server.py" respawn="false" output="screen"/>
-   <node name="cob_pick_place_action" pkg="cob_pick_place_action" type="cob_pick_place_action" args="$(arg manipulator_group)" respawn="false" output="screen">
+   <node name="cob_grasp_action" pkg="cob_grasp_action" type="cob_grasp_action" args="$(arg manipulator_group)" respawn="false" output="screen">
    		<param name = "endeffector_name" type="string" value="$(arg endeffector_name)"/>
    </node>
 </launch>
